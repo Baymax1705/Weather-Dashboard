@@ -15,16 +15,16 @@ const STYLES = {
     statValue: "font-semibold text-lg"
 };
 
-const WeatherCard = ({ weather }) => {
-    // Safety check: if no weather data is passed, don't render anything
+const WeatherCard = ({ weather, unit = 'C' }) => {
     if (!weather) return null;
 
     const { name, sys, main, weather: weatherDetails, wind } = weather;
     const currentWeather = weatherDetails[0];
 
+    const temp = Math.round(unit === 'F' ? (main.temp * 9 / 5) + 32 : main.temp);
+
     return (
         <div className={STYLES.card}>
-            {/* Header: City Name and Icon */}
             <div className={STYLES.header}>
                 <div>
                     <h2 className={STYLES.cityName}>{name}, {sys.country}</h2>
@@ -37,14 +37,12 @@ const WeatherCard = ({ weather }) => {
                 />
             </div>
 
-            {/* Main Temperature Display */}
             <div className={STYLES.tempContainer}>
                 <div className="temp-display">
-                    <h1 className={STYLES.tempText}>{Math.round(main.temp)}°C</h1>
+                    <h1 className={STYLES.tempText}>{temp}°{unit}</h1>
                 </div>
             </div>
 
-            {/* Footer Stats: Humidity and Wind */}
             <div className={STYLES.statsContainer}>
                 <div className={STYLES.statItem}>
                     <span className={STYLES.statLabel}>Humidity</span>

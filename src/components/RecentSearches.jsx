@@ -8,7 +8,6 @@ const STYLES = {
 };
 
 const RecentSearches = ({ searches, onSelect }) => {
-    // Don't render anything if there are no searches
     if (!searches || searches.length === 0) return null;
 
     return (

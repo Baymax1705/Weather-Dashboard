@@ -11,10 +11,9 @@ const SearchBar = ({ onSearch }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Prevent empty searches
         if (city.trim()) {
             onSearch(city.trim());
-            setCity(''); // Clear input after search
+            setCity('');
         }
     };
 

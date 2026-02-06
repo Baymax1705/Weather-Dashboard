@@ -24,7 +24,6 @@ const mockWeather = {
 };
 
 export const getWeather = async (city) => {
-  // 1. Check if we have an API key. If not, use the mock mode.
   if (!API_KEY) {
     console.warn("⚠️ No API key found. Using Mock Data mode.");
     console.info("To use real data, add VITE_WEATHER_API_KEY to your .env file.");
@@ -45,7 +44,6 @@ export const getWeather = async (city) => {
     };
   }
 
-  // 2. We have a key! Let's fetch real data.
   try {
     const response = await fetch(`${BASE_URL}?q=${city}&appid=${API_KEY}&units=metric`);
 
@@ -59,12 +57,10 @@ export const getWeather = async (city) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    // Re-throw to let the UI handle the error display
     throw error;
   }
 };
 
 export const getIconUrl = (iconCode) => {
-  // Returns the official OpenWeatherMap icon URL
   return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 };

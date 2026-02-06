@@ -5,7 +5,6 @@ import Loading from './components/Loading'
 import RecentSearches from './components/RecentSearches'
 import { getWeather } from './services/weatherApi'
 
-// Style constants for cleaner JSX
 const STYLES = {
     container: "min-h-screen flex justify-center items-center p-5 bg-gradient-to-br from-[#00feba] via-[#5b548a] to-[#1f1f1f] bg-[length:400%_400%] animate-gradient",
     glassPanel: "bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 w-full max-w-lg min-h-[600px] flex flex-col shadow-2xl",
@@ -18,8 +17,8 @@ function App() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [recentSearches, setRecentSearches] = useState([])
+    const [unit, setUnit] = useState('C') // 'C' or 'F'
 
-    // Load search history from local storage on startup
     useEffect(() => {
         const saved = localStorage.getItem('recentSearches')
         if (saved) {
@@ -27,10 +26,14 @@ function App() {
         }
     }, [])
 
+    const toggleUnit = () => {
+        setUnit(prev => prev === 'C' ? 'F' : 'C')
+    }
+
     const handleSearch = async (city) => {
         setLoading(true)
         setError(null)
-        setWeather(null) // Reset weather while fetching new data
+        setWeather(null)
 
         try {
             const data = await getWeather(city)
@@ -43,15 +46,11 @@ function App() {
         }
     }
 
-    // Add city to history, keeping only unique recent 5 imports
     const addToRecent = (city) => {
         setRecentSearches(prev => {
-            // Filter out existing entry to avoid duplicates (case-insensitive)
             const filtered = prev.filter(c => c.toLowerCase() !== city.toLowerCase())
-            // Add new city to the top and keep only the last 5
             const newSearches = [city, ...filtered].slice(0, 5)
 
-            // Save to persistence
             localStorage.setItem('recentSearches', JSON.stringify(newSearches))
             return newSearches
         })
@@ -60,8 +59,14 @@ function App() {
     return (
         <div className={STYLES.container}>
             <div className={STYLES.glassPanel}>
-                <header>
+                <header className="relative">
                     <h1 className={STYLES.headerTitle}>Weather Dashboard</h1>
+                    <button
+                        onClick={toggleUnit}
+                        className="absolute top-0 right-0 text-white/70 hover:text-white border border-white/30 rounded-lg px-3 py-1 text-sm transition-colors hover:bg-white/10"
+                    >
+                        °{unit}
+                    </button>
                 </header>
 
                 <section className="flex justify-center mb-8">
@@ -77,7 +82,7 @@ function App() {
 
                     {loading && <Loading />}
 
-                    {weather && !loading && <WeatherCard weather={weather} />}
+                    {weather && !loading && <WeatherCard weather={weather} unit={unit} />}
                 </section>
 
                 <footer className="mt-auto pt-4 border-t border-white/10">
